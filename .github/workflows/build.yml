@@ -1,0 +1,51 @@
+# Basic workflow that:
+# --> lints the markdown in the README file
+name: build
+
+# Controls when the action will run.
+# Triggers the workflow on push or pull request
+# events but only for the master branch.
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs
+# that can run sequentially or in parallel
+jobs:
+  # The workflow contains a single job called "build"
+  build:
+    # The runner will run on the latest version of Ubuntu
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Perform all actions on multiple versions of Python
+        python-version: [3.6, 3.7, 3.8]
+    # Define the steps run in the workflow
+    steps:
+      # Checkout out the gregarious repository
+      - name: Check out code
+        uses: actions/checkout@v2
+      # Run the mdl linting tool, which references
+      # the .mdlrc file stored in the repo's root
+      # for further configuration details
+      - name: Run mdl
+        uses: actionshub/markdownlint@master
+      # Setup Python for the current version of the language
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      # Install the Poetry package manager
+      - name: Install Poetry
+        run: |
+          pip install poetry
+      # Install both the application and development dependencies
+      - name: Install dependencies
+        run: |
+          poetry install
+      # Perform all of the checks specified in .pre-commit-config.yaml
+      - name: Perform pre-commit checks
+        run: |
+          poetry run pre-commit run --all-files
