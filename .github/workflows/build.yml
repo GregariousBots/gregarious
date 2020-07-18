@@ -48,5 +48,5 @@ jobs:
       # Perform all of the checks specified in .pre-commit-config.yaml
       - name: Perform pre-commit checks
         run: |
-          pre-commit install-hooks
+          poetry run pre-commit install-hooks
           poetry run pre-commit run --all-files
