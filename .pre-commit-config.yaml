@@ -9,12 +9,13 @@ repos:
   - id: check-symlinks
   - id: trailing-whitespace
 
-# comprehensive Python source code linting with pylint
+# check Python source code linting with pylint
 - repo: https://github.com/pre-commit/mirrors-pylint
   rev: v2.3.1
   hooks:
   - id: pylint
 
+# check Python source code linting with flake8
 - repo: https://gitlab.com/pycqa/flake8
   rev: 3.8.3
   hooks:
@@ -27,13 +28,13 @@ repos:
   - id: pydocstyle
 
 
-# format Python code with black
+# check and re-format (if needed) Python code with black
 - repo: https://github.com/ambv/black
   rev: 19.10b0
   hooks:
   - id: black
 
-# reorder Python imports
+# reorder Python imports for all Python modules
 - repo: https://github.com/asottile/reorder_python_imports
   rev: v1.9.0
   hooks:
