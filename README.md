@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/GregariousBots/gregarious/workflows/build/badge.svg)](https://github.com/GregariousBots/gregarious/actions)
+[![Actions Status](https://github.com/GregariousBots/gregarious/workflows/build/badge.svg)](https://github.com/GregariousBots/gregarious/actions) [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 # Gregarious
 
