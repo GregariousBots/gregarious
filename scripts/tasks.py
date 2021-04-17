@@ -1,12 +1,16 @@
 """Run tasks that support easy linting without reliance on pre-commits."""
+import inspect
 import os
 
+import tasks as module
 from invoke import task
 from rich.console import Console
 
 console = Console()
 
 BLACK = "black"
+RUN_LINTER = "run_linter"
+SPACE_SEPARATOR = " "
 VIRTUAL_ENV_COMMAND = "echo $VIRTUAL_ENV"
 
 
@@ -32,7 +36,17 @@ def extract_directories(search_directory="."):
     return directory_list
 
 
-def run_linter_command(c, linter_command):
+def extract_linter_functions():
+    """Extract a list of all of the linter functions in this module."""
+    functions = dict(inspect.getmembers(module, inspect.isfunction))
+    linter_functions = []
+    for function in functions:
+        if RUN_LINTER in function:
+            linter_functions.append(function)
+    return linter_functions
+
+
+def invoke_linter_command(c, linter_command):
     """Run the provided linter_command and return the result."""
     console.print()
     console.print(":zap:", "Running:", linter_command)
@@ -40,13 +54,11 @@ def run_linter_command(c, linter_command):
     console.print()
 
 
-def run_black_linter(c, check, directory_list):
+def run_linter_black(c, check, directory_list):
     """Run the black linter to check and fix Python code formatting."""
-    space_separator = " "
-    directories = space_separator.join(directory_list)
-    print(directories)
-    black_command = space_separator.join([BLACK, check, directories])
-    run_linter_command(c, black_command)
+    directories = SPACE_SEPARATOR.join(directory_list)
+    black_command = SPACE_SEPARATOR.join([BLACK, check, directories])
+    invoke_linter_command(c, black_command)
 
 
 @task
@@ -58,9 +70,15 @@ def lint(c, check="--check"):
         console.print("Running in a virtual environment:")
         c.run(VIRTUAL_ENV_COMMAND)
         console.print()
+        linters = extract_linter_functions()
+        console.print("Available linters functions:", SPACE_SEPARATOR.join(linters))
+        print()
         directory_list = extract_directories(".")
-        print(directory_list)
-        run_black_linter(c, check, directory_list)
+        console.print("Directories subject to linting:", directory_list)
+        linters = extract_linter_functions()
+        for linter in linters:
+            linter_to_call = getattr(module, linter)
+            linter_to_call(c, check, directory_list)
     else:
         console.print("Not running in a virtual environment!")
     console.print("...", "Done running all linters", ":rocket:")
