@@ -27,7 +27,6 @@ repos:
   hooks:
   - id: pydocstyle
 
-
 # check and re-format (if needed) Python code with black
 - repo: https://github.com/ambv/black
   rev: 19.10b0
